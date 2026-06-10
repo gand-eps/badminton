@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Badminton Éval</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.10.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --green: #1a472a;
+    --yellow: #f0e060;
+    --green-light: #e6f0ea;
+    --red: #c0392b;
+    --bg: #f5f5f3;
+    --bg2: #eeecea;
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18;
+    --text2: #6b6b68;
+    --text3: #9b9b98;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --warning-bg: #fef3cd;
+    --warning-text: #7d5a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111210;
+      --bg2: #1c1c1a;
+      --surface: #222220;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.22);
+      --text: #f0f0ee;
+      --text2: #a0a09e;
+      --text3: #606060;
+      --green-light: #0e2916;
+      --warning-bg: #3a2e00;
+      --warning-text: #ffd060;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--text); }
+  body { overflow-y: auto; }
+
+  .app { max-width: 480px; margin: 0 auto; min-height: 100vh; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* HEADER */
+  .header {
+    background: var(--green);
+    color: var(--yellow);
+    padding: 14px 16px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header h1 { font-size: 17px; font-weight: 600; letter-spacing: .3px; flex: 1; }
+  .back { background: none; border: none; color: var(--yellow); font-size: 24px; cursor: pointer; padding: 0 8px 0 0; line-height: 1; }
+  .badge {
+    background: var(--yellow);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sec { padding: 16px; }
+  .lbl {
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 7px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+  }
+  .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+  /* BUTTONS */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    border: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    transition: opacity .15s, transform .1s;
+    text-decoration: none;
+  }
+  .btn:active { opacity: .75; transform: scale(.98); }
+  .btn:disabled { opacity: .4; cursor: default; transform: none; }
+  .btn-green { background: var(--green); color: var(--yellow); }
+  .btn-yellow { background: var(--yellow); color: var(--green); }
+  .btn-outline { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); }
+  .btn-danger { background: var(--bg2); color: var(--red); border: 1px solid var(--red); }
+  .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: var(--radius); margin-bottom: 0; width: auto; }
+
+  /* INPUTS */
+  .inp {
+    width: 100%;
+    padding: 13px 14px;
+    font-size: 16px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    margin-bottom: 10px;
+    -webkit-appearance: none;
+  }
+  .inp:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,71,42,.15); }
+  .sel {
+    width: 100%;
+    padding: 13px 14px;
+    font-size: 15px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    margin-bottom: 10px;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .card:active { border-color: var(--green); }
+  .card.full { opacity: .5; cursor: default; }
+  .card.done { opacity: .6; cursor: default; }
+  .card-title { font-size: 15px; font-weight: 600; }
+  .card-sub { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; min-height: 44px; margin-bottom: 10px; gap: 4px; align-items: flex-start; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 500;
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .chip .x { background: none; border: none; color: var(--green); cursor: pointer; font-size: 17px; line-height: 1; padding: 0; opacity: .7; }
+  .chip .x:active { opacity: 1; }
+
+  /* ALERT */
+  .alert {
+    background: var(--warning-bg);
+    color: var(--warning-text);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  /* ZONE BUTTONS */
+  .zone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .zone-btn {
+    padding: 18px 8px 14px;
+    border-radius: var(--radius-lg);
+    border: 2px solid transparent;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--bg2);
+    color: var(--text);
+    transition: all .15s;
+    line-height: 1.4;
+  }
+  .zone-btn:active { transform: scale(.97); }
+  .zone-btn.sel { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .zone-btn .zi { font-size: 28px; margin-bottom: 6px; display: block; }
+  .zone-btn.no-zone { border-style: dashed; opacity: .65; }
+
+  /* SCORE AREA */
+  .score-area { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .score-card { border-radius: var(--radius-lg); padding: 16px 10px; text-align: center; }
+  .score-card.me { background: var(--green); color: var(--yellow); }
+  .score-card.adv { background: var(--bg2); color: var(--text); }
+  .sc-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sc-num { font-size: 44px; font-weight: 700; line-height: 1; }
+  .sc-zone { font-size: 11px; margin-top: 4px; opacity: .8; }
+
+  /* HALF BAR */
+  .half-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+  .half-pill { flex: 1; padding: 7px; text-align: center; border-radius: 99px; font-size: 12px; font-weight: 600; background: var(--bg2); color: var(--text2); }
+  .half-pill.active { background: var(--green); color: var(--yellow); }
+
+  /* POINT BUTTONS */
+  .pt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .pt-btn {
+    padding: 22px 10px;
+    border-radius: var(--radius-lg);
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: transform .1s;
+  }
+  .pt-btn:active { transform: scale(.95); }
+  .pt-btn .pt-lbl { font-size: 11px; opacity: .8; }
+  .pt-me { background: var(--green); color: var(--yellow); }
+  .pt-adv { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); }
+  .pt-bonus-me { background: #fdf9e0; color: #6b5a00; }
+  .pt-bonus-adv { background: var(--bg2); color: var(--text); border: 1px dashed var(--border2); }
+
+  /* SMASH */
+  .smash-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: var(--radius-lg);
+    border: none;
+    background: var(--red);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity .15s;
+  }
+  .smash-btn:active { opacity: .8; }
+
+  /* TIMER */
+  .timer { font-size: 50px; font-weight: 700; text-align: center; color: var(--green); margin: 8px 0; letter-spacing: 3px; font-variant-numeric: tabular-nums; }
+  .timer.warn { color: var(--red); }
+
+  /* LOG */
+  .mini-log { margin: 8px 0; max-height: 80px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 10px; }
+  .log-e { font-size: 12px; color: var(--text2); padding: 3px 0; border-bottom: 1px solid var(--border); }
+  .log-e:last-child { border-bottom: none; }
+
+  /* PLAYER SEL */
+  .player-sel-btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    border: 2px solid transparent;
+    cursor: pointer;
+    margin-bottom: 10px;
+    background: var(--bg2);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all .15s;
+  }
+  .player-sel-btn:active { transform: scale(.98); }
+  .player-sel-btn.sel { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  .avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--green); color: var(--yellow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* RESULT */
+  .result-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .result-row:last-child { border-bottom: none; }
+  .rank-b { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; background: var(--bg2); color: var(--text2); flex-shrink: 0; }
+  .rank-b.gold { background: var(--yellow); color: var(--green); }
+  .rank-b.silver { background: #ddd; color: #555; }
+  .rank-b.bronze { background: #e8c89a; color: #7a4800; }
+
+  /* TABS */
+  .tabs { display: flex; border-bottom: 1px solid var(--border2); margin-bottom: 14px; }
+  .tab { flex: 1; padding: 11px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent; }
+  .tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+  /* HOME HERO */
+  .hero { background: var(--green); color: var(--yellow); padding: 28px 20px 22px; text-align: center; }
+  .hero .icon { font-size: 40px; margin-bottom: 8px; }
+  .hero h1 { font-size: 22px; font-weight: 700; }
+  .hero .sub { font-size: 13px; color: rgba(240,224,96,.75); margin-top: 4px; }
+
+  /* VS pill */
+  .vs-pill { background: var(--green); color: var(--yellow); border-radius: var(--radius); padding: 5px 12px; font-size: 13px; font-weight: 600; }
+
+  /* HT options */
+  .ht-chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 99px; background: var(--green-light); color: var(--green); font-size: 13px; margin: 3px; font-weight: 500; }
+
+  /* Match select done overlay */
+  .done-label { font-size: 12px; color: var(--text3); font-style: italic; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="s-home">
+  <div class="hero">
+    <div class="icon">🏸</div>
+    <h1>Badminton Éval</h1>
+    <div class="sub">EPS – Matchs en poule</div>
+  </div>
+  <div class="sec">
+    <button class="btn btn-green" id="btn-open-pool">
+      <i class="ti ti-users"></i> Rejoindre une poule
+    </button>
+    <button class="btn btn-outline" id="btn-admin">
+      <i class="ti ti-settings"></i> Gérer les poules (prof)
+    </button>
+    <div class="divider"></div>
+    <div class="lbl">Poules actives</div>
+    <div id="home-pools"></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN ===== -->
+<div class="screen" id="s-admin">
+  <div class="header">
+    <button class="back" id="admin-back">←</button>
+    <h1>Gestion des poules</h1>
+  </div>
+  <div class="sec">
+    <div class="lbl">Nouvelle poule</div>
+    <input class="inp" id="new-pool-name" placeholder="Nom (ex : Terrain A)" autocomplete="off">
+    <div class="lbl">Taille</div>
+    <select class="sel" id="new-pool-size">
+      <option value="3">3 joueurs</option>
+      <option value="4">4 joueurs</option>
+    </select>
+    <button class="btn btn-green" id="btn-create-pool">
+      <i class="ti ti-plus"></i> Créer la poule
+    </button>
+    <div class="divider"></div>
+    <div class="lbl">Poules existantes</div>
+    <div id="admin-pools"></div>
+    <div class="divider"></div>
+    <button class="btn btn-danger" id="btn-reset-all">
+      <i class="ti ti-trash"></i> Tout réinitialiser
+    </button>
+  </div>
+</div>
+
+<!-- ===== POOL ENTRY ===== -->
+<div class="screen" id="s-pool-entry">
+  <div class="header">
+    <button class="back" id="pool-entry-back">←</button>
+    <h1 id="pool-entry-title">Poule</h1>
+    <div class="badge" id="pool-entry-badge">0/3</div>
+  </div>
+  <div class="sec">
+    <div class="lbl">Joueurs sur ce téléphone</div>
+    <div class="chips" id="entry-chips"></div>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <input class="inp" id="entry-name-input" placeholder="Prénom du joueur" style="margin:0;flex:1" maxlength="20" autocomplete="off" autocorrect="off" autocapitalize="words">
+      <button id="btn-add-player" class="btn btn-green" style="width:auto;padding:0 18px;margin:0;flex-shrink:0">
+        <i class="ti ti-plus"></i>
+      </button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px" id="entry-hint">Ajoute tous les joueurs de ce téléphone, puis clique sur Rejoindre.</div>
+    <button class="btn btn-green" id="btn-join-pool" disabled>
+      <i class="ti ti-check"></i> Rejoindre la poule
+    </button>
+    <div class="divider"></div>
+    <div class="lbl">Déjà inscrits dans cette poule</div>
+    <div id="entry-existing" style="font-size:13px;color:var(--text2)"></div>
+  </div>
+</div>
+
+<!-- ===== MATCH SELECT ===== -->
+<div class="screen" id="s-match-select">
+  <div class="header">
+    <button class="back" id="match-select-back">←</button>
+    <h1 id="match-select-title">Mes matchs</h1>
+  </div>
+  <div class="sec">
+    <div class="lbl">Matchs disponibles sur ce téléphone</div>
+    <div id="match-select-list"></div>
+    <div class="divider"></div>
+    <button class="btn btn-outline" id="btn-see-results">
+      <i class="ti ti-chart-bar"></i> Voir le classement
+    </button>
+  </div>
+</div>
+
+<!-- ===== WHO IS PLAYING ===== -->
+<div class="screen" id="s-who">
+  <div class="header">
+    <button class="back" id="who-back">←</button>
+    <h1>Qui tient le téléphone ?</h1>
+  </div>
+  <div class="sec">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">
+      Le score "moi" s'affichera en vert pour le joueur sélectionné.
+    </div>
+    <div id="who-btns"></div>
+  </div>
+</div>
+
+<!-- ===== ZONE CHOICE ===== -->
+<div class="screen" id="s-zone">
+  <div class="header">
+    <h1>Zone bonus</h1>
+    <div class="badge" id="zone-badge">1ère MT</div>
+  </div>
+  <div class="sec">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">
+      Un volant dans ta zone compte <strong>double</strong>. Choisis stratégiquement !
+    </div>
+    <div class="zone-grid">
+      <button class="zone-btn" onclick="selectZone('lateral')" id="zbtn-lateral">
+        <span class="zi">↔️</span>Couloirs latéraux
+      </button>
+      <button class="zone-btn" onclick="selectZone('front')" id="zbtn-front">
+        <span class="zi">⬆️</span>Zone avant
+      </button>
+      <button class="zone-btn" onclick="selectZone('back')" id="zbtn-back">
+        <span class="zi">⬇️</span>Zone arrière
+      </button>
+      <button class="zone-btn no-zone" onclick="selectZone('none')" id="zbtn-none">
+        <span class="zi">➖</span>Sans zone bonus
+      </button>
+    </div>
+    <button class="btn btn-green" id="zone-confirm-btn" disabled>
+      <i class="ti ti-check"></i> Confirmer ma zone
+    </button>
+  </div>
+</div>
+
+<!-- ===== MATCH ===== -->
+<div class="screen" id="s-match">
+  <div class="header">
+    <h1 id="match-title">Match</h1>
+    <div class="badge" id="match-badge">1ère MT</div>
+  </div>
+  <div class="sec">
+    <div class="half-bar">
+      <div class="half-pill active" id="hp1">1ère mi-temps</div>
+      <div class="half-pill" id="hp2">2ème mi-temps</div>
+    </div>
+
+    <div class="timer" id="match-timer">4:00</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn btn-green" id="timer-btn" style="margin:0;flex:1;padding:13px;font-size:14px">
+        <i class="ti ti-player-play"></i> Démarrer
+      </button>
+      <button class="btn btn-outline" id="timer-reset" style="margin:0;padding:13px 16px;font-size:14px">
+        <i class="ti ti-refresh"></i>
+      </button>
+    </div>
+
+    <div class="score-area">
+      <div class="score-card me">
+        <div class="sc-name" id="sc-my-name">Moi</div>
+        <div class="sc-num" id="sc-my-num">0</div>
+        <div class="sc-zone" id="sc-my-zone"></div>
+      </div>
+      <div class="score-card adv">
+        <div class="sc-name" id="sc-adv-name">Adv</div>
+        <div class="sc-num" id="sc-adv-num">0</div>
+        <div class="sc-zone" style="color:var(--text2)" id="sc-adv-zone"></div>
+      </div>
+    </div>
+
+    <div id="smash-row" style="display:none">
+      <button class="smash-btn" id="smash-btn" onclick="useSmash()">
+        <i class="ti ti-bolt"></i> Frappe bonus — Smash !
+      </button>
+    </div>
+
+    <div class="pt-grid">
+      <button class="pt-btn pt-me" onclick="addPt('me')">
+        <div style="font-size:26px;font-weight:700">+1</div>
+        <div class="pt-lbl" id="pt-me-lbl">Mon point</div>
+      </button>
+      <button class="pt-btn pt-adv" onclick="addPt('adv')">
+        <div style="font-size:26px;font-weight:700">+1</div>
+        <div class="pt-lbl" id="pt-adv-lbl">Point adversaire</div>
+      </button>
+    </div>
+
+    <div id="bonus-row" style="display:none">
+      <div class="pt-grid" style="margin-bottom:0">
+        <button class="pt-btn pt-bonus-me" onclick="addPt('me-bonus')">
+          <div style="font-size:22px">⭐ +2</div>
+          <div class="pt-lbl">Bonus moi</div>
+        </button>
+        <button class="pt-btn pt-bonus-adv" onclick="addPt('adv-bonus')">
+          <div style="font-size:22px">⭐ +2</div>
+          <div class="pt-lbl">Bonus adversaire</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="mini-log" id="match-log">
+      <div class="log-e" style="text-align:center;color:var(--text3)">Aucun point encore</div>
+    </div>
+
+    <button class="btn btn-yellow" id="end-half-btn" style="margin-top:10px">
+      <i class="ti ti-flag"></i> Fin de mi-temps / Concertation
+    </button>
+  </div>
+</div>
+
+<!-- ===== HALFTIME ===== -->
+<div class="screen" id="s-halftime">
+  <div class="header">
+    <h1>Temps de concertation</h1>
+    <div class="badge">Pause</div>
+  </div>
+  <div class="sec">
+    <div class="alert">
+      Le joueur qui perd peut modifier les zones bonus et choisir des options pour la 2ème mi-temps.
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <div style="flex:1;padding:14px;background:var(--green);color:var(--yellow);border-radius:var(--radius-lg);text-align:center">
+        <div style="font-size:13px;font-weight:500" id="ht-n1">Moi</div>
+        <div style="font-size:34px;font-weight:700" id="ht-s1">0</div>
+      </div>
+      <div style="flex:1;padding:14px;background:var(--bg2);border-radius:var(--radius-lg);text-align:center">
+        <div style="font-size:13px;font-weight:500" id="ht-n2">Adv</div>
+        <div style="font-size:34px;font-weight:700" id="ht-s2">0</div>
+      </div>
+    </div>
+    <div id="ht-options"></div>
+    <div id="ht-summary" style="margin-bottom:12px;display:flex;flex-wrap:wrap"></div>
+    <button class="btn btn-green" id="btn-start-2nd">
+      <i class="ti ti-player-play"></i> Lancer la 2ème mi-temps
+    </button>
+  </div>
+</div>
+
+<!-- ===== ZONE2 ===== -->
+<div class="screen" id="s-zone2">
+  <div class="header">
+    <button class="back" id="zone2-back">←</button>
+    <h1 id="zone2-title">Modifier la zone</h1>
+  </div>
+  <div class="sec">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px" id="zone2-desc"></div>
+    <div class="zone-grid">
+      <button class="zone-btn" onclick="selZ2('lateral')" id="z2-lateral">
+        <span class="zi">↔️</span>Couloirs latéraux
+      </button>
+      <button class="zone-btn" onclick="selZ2('front')" id="z2-front">
+        <span class="zi">⬆️</span>Zone avant
+      </button>
+      <button class="zone-btn" onclick="selZ2('back')" id="z2-back">
+        <span class="zi">⬇️</span>Zone arrière
+      </button>
+      <button class="zone-btn no-zone" onclick="selZ2('none')" id="z2-none">
+        <span class="zi">➖</span>Sans zone bonus
+      </button>
+    </div>
+    <button class="btn btn-green" id="zone2-confirm" disabled>
+      <i class="ti ti-check"></i> Confirmer
+    </button>
+  </div>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div class="screen" id="s-results">
+  <div class="header">
+    <button class="back" id="results-back">←</button>
+    <h1>Classement</h1>
+  </div>
+  <div class="sec">
+    <div class="tabs">
+      <div class="tab active" id="tab-rank" onclick="showTab('rank')">Classement</div>
+      <div class="tab" id="tab-ms" onclick="showTab('ms')">Détail matchs</div>
+    </div>
+    <div id="res-rank"></div>
+    <div id="res-ms" style="display:none"></div>
+    <div class="divider"></div>
+    <button class="btn btn-yellow" id="btn-export">
+      <i class="ti ti-download"></i> Exporter (copier dans le presse-papier)
+    </button>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+const ZL = { lateral:'Couloirs latéraux', front:'Zone avant', back:'Zone arrière', none:'Sans zone' };
+let S = {};
+function load() { try { S = JSON.parse(localStorage.getItem('badv2') || '{}'); } catch(e) { S = {}; } if (!S.pools) S.pools = {}; }
+function save() { localStorage.setItem('badv2', JSON.stringify(S)); }
+function go(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+
+// Match runtime state
+let CM = null;
+let timerInt = null, timerOn = false, timerSec = 240;
+let myZone = 'none', advZone = 'none', hasSmash = false;
+let mLog = [];
+let currentHalf = 1;
+let z2Target = null, z2Sel = null;
+let entryPlayers = [];
+let entryPoolId = null;
+
+// ===================== HOME =====================
+function renderHome() {
+  const pools = Object.values(S.pools || {});
+  const el = document.getElementById('home-pools');
+  if (!pools.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:14px 0;text-align:center">Aucune poule — le prof doit en créer une</div>';
+    return;
+  }
+  el.innerHTML = pools.map(p => {
+    const cnt = Object.keys(p.players || {}).length;
+    const total = Object.values(p.matches || {}).length;
+    const done = Object.values(p.matches || {}).filter(m => m.done).length;
+    return `<div class="card" onclick="openPool('${p.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="card-title">${p.name}</div>
+        <div style="font-size:12px;color:var(--text2)">${cnt}/${p.size} joueurs</div>
+      </div>
+      <div class="card-sub">${total ? done + '/' + total + ' matchs joués' : 'Pas encore démarré'}</div>
+    </div>`;
+  }).join('');
+}
+
+function openPool(pid) {
+  load();
+  S.currentPool = pid;
+  save();
+  entryPlayers = [];
+  entryPoolId = pid;
+  renderEntryScreen(pid);
+  go('s-pool-entry');
+}
+
+// ===================== ADMIN =====================
+function renderAdmin() {
+  const pools = Object.values(S.pools || {});
+  const el = document.getElementById('admin-pools');
+  if (!pools.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text2)">Aucune poule créée</div>'; return; }
+  el.innerHTML = pools.map(p => {
+    const cnt = Object.keys(p.players || {}).length;
+    const names = Object.keys(p.players || {}).join(', ') || 'Aucun joueur';
+    const matchStatus = Object.values(p.matches || {}).length
+      ? Object.values(p.matches).filter(m => m.done).length + '/' + Object.values(p.matches).length + ' matchs joués'
+      : 'Matchs non générés';
+    return `<div class="card" style="cursor:default">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div class="card-title">${p.name} <span style="font-size:12px;font-weight:400;color:var(--text2)">(${cnt}/${p.size})</span></div>
+          <div class="card-sub" style="margin-top:4px">${names}</div>
+          <div class="card-sub">${matchStatus}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
+          <button onclick="genMatches('${p.id}')" class="btn btn-green btn-sm"><i class="ti ti-arrows-shuffle"></i> Matchs</button>
+          <button onclick="delPool('${p.id}')" class="btn btn-sm" style="color:var(--red);border:1px solid var(--red);background:none"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function genMatches(pid) {
+  load();
+  const p = S.pools[pid];
+  const players = Object.keys(p.players || {});
+  if (players.length < p.size) { alert(`Il faut ${p.size} joueurs (${players.length} actuellement)`); return; }
+  p.matches = {};
+  let mi = 0;
+  for (let i = 0; i < players.length; i++)
+    for (let j = i + 1; j < players.length; j++) {
+      const id = 'm' + mi++;
+      p.matches[id] = { id, p1: players[i], p2: players[j], done: false, score1: 0, score2: 0 };
+    }
+  save(); renderAdmin();
+  alert(`✅ ${mi} matchs générés pour "${p.name}" !`);
+}
+
+function delPool(pid) {
+  if (!confirm('Supprimer cette poule et tous ses données ?')) return;
+  load(); delete S.pools[pid]; save(); renderAdmin(); renderHome();
+}
+
+// ===================== POOL ENTRY =====================
+function renderEntryScreen(pid) {
+  load();
+  const p = S.pools[pid];
+  document.getElementById('pool-entry-title').textContent = p.name;
+  entryPlayers = entryPlayers.filter(n => !(p.players && p.players[n]));
+  updateEntryUI();
+}
+
+function updateEntryUI() {
+  load();
+  const p = S.pools[entryPoolId];
+  const registered = Object.keys(p.players || {});
+  const el = document.getElementById('entry-chips');
+  el.innerHTML = entryPlayers.length
+    ? entryPlayers.map(n => `<div class="chip">${n}<button class="x" onclick="rmEntry('${n}')">×</button></div>`).join('')
+    : '<span style="font-size:13px;color:var(--text2);padding:6px 0">Aucun joueur ajouté</span>';
+  const total = registered.length + entryPlayers.length;
+  document.getElementById('pool-entry-badge').textContent = total + '/' + p.size;
+  const joinBtn = document.getElementById('btn-join-pool');
+  joinBtn.disabled = entryPlayers.length === 0;
+  document.getElementById('entry-hint').textContent = entryPlayers.length
+    ? `${entryPlayers.length} joueur(s) prêt(s) à rejoindre`
+    : `Ajoute au moins un joueur pour rejoindre.`;
+  document.getElementById('entry-existing').innerHTML = registered.length
+    ? registered.map(n => `<span style="display:inline-flex;align-items:center;gap:4px;margin:3px;padding:5px 10px;border-radius:99px;background:var(--bg2);font-size:13px">${n}</span>`).join('')
+    : 'Personne encore';
+}
+
+function addEntryPlayer() {
+  const inp = document.getElementById('entry-name-input');
+  const name = inp.value.trim();
+  if (!name) return;
+  load();
+  const p = S.pools[entryPoolId];
+  const all = Object.keys(p.players || {});
+  if (all.includes(name) || entryPlayers.includes(name)) { alert('Ce prénom est déjà pris dans cette poule !'); return; }
+  if (entryPlayers.length >= p.size - all.length) { alert(`Plus de place dans cette poule (max ${p.size})`); return; }
+  entryPlayers.push(name);
+  inp.value = '';
+  inp.focus();
+  updateEntryUI();
+}
+
+function rmEntry(name) { entryPlayers = entryPlayers.filter(n => n !== name); updateEntryUI(); }
+
+function joinPool() {
+  if (!entryPlayers.length) return;
+  load();
+  const p = S.pools[entryPoolId];
+  if (!p.players) p.players = {};
+  entryPlayers.forEach(name => { p.players[name] = { name, joinedAt: Date.now() }; });
+  if (!S.devicePlayers) S.devicePlayers = {};
+  if (!S.devicePlayers[entryPoolId]) S.devicePlayers[entryPoolId] = [];
+  S.devicePlayers[entryPoolId] = [...new Set([...S.devicePlayers[entryPoolId], ...entryPlayers])];
+  save();
+  entryPlayers = [];
+  showMatchSelect(entryPoolId);
+}
+
+// ===================== MATCH SELECT =====================
+function showMatchSelect(pid) {
+  load();
+  S.currentPool = pid;
+  save();
+  const p = S.pools[pid];
+  const myPlayers = (S.devicePlayers || {})[pid] || [];
+  document.getElementById('match-select-title').textContent = p.name;
+  const allMatches = Object.values(p.matches || {});
+  const myMatches = allMatches.filter(m => myPlayers.includes(m.p1) || myPlayers.includes(m.p2));
+  const el = document.getElementById('match-select-list');
+  if (!allMatches.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:12px 0">Aucun match — le prof doit générer les matchs depuis la gestion.</div>';
+  } else if (!myMatches.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--text2);padding:12px 0">Aucun match pour les joueurs de ce téléphone.</div>';
+  } else {
+    el.innerHTML = myMatches.map(m => `
+      <div class="card ${m.done ? 'done' : ''}" onclick="${m.done ? '' : 'startMatchFlow(\'' + m.id + '\')'}">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="card-title">${m.p1} <span style="font-size:13px;color:var(--text2)">vs</span> ${m.p2}</div>
+            <div class="card-sub">${m.done ? '✅ Terminé — ' + m.score1 + ' / ' + m.score2 : 'Prêt à jouer'}</div>
+          </div>
+          ${m.done ? '<i class="ti ti-check" style="font-size:20px;color:var(--green)"></i>' : '<div class="vs-pill">Jouer</div>'}
+        </div>
+      </div>`).join('');
+  }
+  go('s-match-select');
+}
+
+// ===================== WHO PLAYS =====================
+function startMatchFlow(mid) {
+  load();
+  const pid = S.currentPool;
+  const m = S.pools[pid].matches[mid];
+  CM = { mid, pid };
+  const myPlayers = (S.devicePlayers || {})[pid] || [];
+  const p1On = myPlayers.includes(m.p1);
+  const p2On = myPlayers.includes(m.p2);
+  if (p1On && p2On) {
+    document.getElementById('who-btns').innerHTML = [m.p1, m.p2].map(n => `
+      <button class="player-sel-btn" onclick="choosePOV('${n}')">
+        <div class="avatar">${n[0].toUpperCase()}</div>
+        <span>${n}</span>
+      </button>`).join('');
+    go('s-who');
+  } else {
+    choosePOV(p1On ? m.p1 : m.p2);
+  }
+}
+
+function choosePOV(name) {
+  load();
+  const { mid, pid } = CM;
+  const m = S.pools[pid].matches[mid];
+  CM.myName = name;
+  CM.advName = name === m.p1 ? m.p2 : m.p1;
+  CM.myKey = name === m.p1 ? 'score1' : 'score2';
+  CM.advKey = name === m.p1 ? 'score2' : 'score1';
+  currentHalf = 1; mLog = []; myZone = 'none'; advZone = 'none'; hasSmash = false;
+  resetTimer();
+  openZoneScreen();
+}
+
+// ===================== ZONE =====================
+function openZoneScreen() {
+  document.getElementById('zone-badge').textContent = '1ère MT';
+  ['lateral','front','back','none'].forEach(z => document.getElementById('zbtn-' + z).classList.remove('sel'));
+  const btn = document.getElementById('zone-confirm-btn');
+  btn.disabled = true;
+  go('s-zone');
+}
+
+function selectZone(z) {
+  myZone = z;
+  ['lateral','front','back','none'].forEach(zz => document.getElementById('zbtn-' + zz).classList.toggle('sel', zz === z));
+  document.getElementById('zone-confirm-btn').disabled = false;
+}
+
+// ===================== MATCH =====================
+function setupMatch() {
+  load();
+  const { mid, pid, myName, advName, myKey, advKey } = CM;
+  const m = S.pools[pid].matches[mid];
+  document.getElementById('match-title').textContent = 'vs ' + advName;
+  document.getElementById('match-badge').textContent = currentHalf === 1 ? '1ère MT' : '2ème MT';
+  document.getElementById('hp1').classList.toggle('active', currentHalf === 1);
+  document.getElementById('hp2').classList.toggle('active', currentHalf === 2);
+  document.getElementById('sc-my-name').textContent = myName;
+  document.getElementById('sc-adv-name').textContent = advName;
+  document.getElementById('sc-my-zone').textContent = myZone !== 'none' ? '⭐ ' + ZL[myZone] : '';
+  document.getElementById('sc-adv-zone').textContent = advZone !== 'none' ? '⭐ ' + ZL[advZone] : '';
+  document.getElementById('bonus-row').style.display = (myZone !== 'none' || advZone !== 'none') ? 'block' : 'none';
+  document.getElementById('smash-row').style.display = hasSmash ? 'block' : 'none';
+  document.getElementById('end-half-btn').innerHTML = currentHalf === 1
+    ? '<i class="ti ti-flag"></i> Fin 1ère MT / Concertation'
+    : '<i class="ti ti-flag"></i> Terminer le match';
+  updateScores();
+  renderLog();
+}
+
+function updateScores() {
+  load();
+  if (!CM) return;
+  const m = S.pools[CM.pid].matches[CM.mid];
+  document.getElementById('sc-my-num').textContent = m[CM.myKey] || 0;
+  document.getElementById('sc-adv-num').textContent = m[CM.advKey] || 0;
+}
+
+function addPt(who) {
+  load();
+  const { mid, pid, myKey, advKey, myName, advName } = CM;
+  const m = S.pools[pid].matches[mid];
+  let label = '';
+  if (who === 'me')          { m[myKey]  = (m[myKey]  || 0) + 1; label = '+1 ' + myName; }
+  else if (who === 'adv')    { m[advKey] = (m[advKey] || 0) + 1; label = '+1 ' + advName; }
+  else if (who === 'me-bonus')  { m[myKey]  = (m[myKey]  || 0) + 2; label = '⭐ +2 ' + myName + ' (zone bonus)'; }
+  else if (who === 'adv-bonus') { m[advKey] = (m[advKey] || 0) + 2; label = '⭐ +2 ' + advName + ' (zone bonus)'; }
+  save();
+  mLog.unshift({ t: fmtTime(240 - timerSec), label });
+  renderLog();
+  updateScores();
+}
+
+function useSmash() {
+  if (!hasSmash) return;
+  load();
+  const { mid, pid, myKey, myName } = CM;
+  const m = S.pools[pid].matches[mid];
+  m[myKey] = (m[myKey] || 0) + 2;
+  hasSmash = false;
+  save();
+  mLog.unshift({ t: fmtTime(240 - timerSec), label: '💥 +2 ' + myName + ' (Smash bonus)' });
+  renderLog();
+  updateScores();
+  document.getElementById('smash-row').style.display = 'none';
+}
+
+function renderLog() {
+  const el = document.getElementById('match-log');
+  if (!mLog.length) { el.innerHTML = '<div class="log-e" style="text-align:center;color:var(--text3)">Aucun point encore</div>'; return; }
+  el.innerHTML = mLog.slice(0, 8).map(e => `<div class="log-e">${e.t} — ${e.label}</div>`).join('');
+}
+
+// ===================== TIMER =====================
+function toggleTimer() {
+  if (timerOn) {
+    clearInterval(timerInt); timerOn = false;
+    document.getElementById('timer-btn').innerHTML = '<i class="ti ti-player-play"></i> Reprendre';
+  } else {
+    timerOn = true;
+    document.getElementById('timer-btn').innerHTML = '<i class="ti ti-player-pause"></i> Pause';
+    timerInt = setInterval(() => {
+      timerSec--;
+      document.getElementById('match-timer').textContent = fmtTime(timerSec);
+      document.getElementById('match-timer').classList.toggle('warn', timerSec <= 30);
+      if (timerSec <= 0) {
+        clearInterval(timerInt); timerOn = false;
+        document.getElementById('timer-btn').innerHTML = '<i class="ti ti-player-play"></i> Démarrer';
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInt); timerOn = false; timerSec = 240;
+  const t = document.getElementById('match-timer');
+  if (t) { t.textContent = '4:00'; t.classList.remove('warn'); }
+  const b = document.getElementById('timer-btn');
+  if (b) b.innerHTML = '<i class="ti ti-player-play"></i> Démarrer';
+}
+
+function fmtTime(s) {
+  const m = Math.floor(Math.max(s, 0) / 60);
+  return m + ':' + (Math.max(s, 0) % 60).toString().padStart(2, '0');
+}
+
+// ===================== HALF TIME =====================
+function endHalf() {
+  clearInterval(timerInt); timerOn = false;
+  if (currentHalf === 1) {
+    load();
+    const { mid, pid, myName, advName, myKey, advKey } = CM;
+    const m = S.pools[pid].matches[mid];
+    const ms = m[myKey] || 0, as = m[advKey] || 0;
+    document.getElementById('ht-n1').textContent = myName;
+    document.getElementById('ht-n2').textContent = advName;
+    document.getElementById('ht-s1').textContent = ms;
+    document.getElementById('ht-s2').textContent = as;
+    document.getElementById('ht-summary').innerHTML = '';
+    const loserIsMe = ms < as, eq = ms === as;
+    let html = '';
+    if (!eq) {
+      const loserName = loserIsMe ? myName : advName;
+      html += `<div class="lbl" style="margin-bottom:8px">Options du perdant (${loserName})</div>`;
+      html += `<button class="btn btn-outline" onclick="htChangeZone('me')" style="padding:14px;font-size:14px"><i class="ti ti-target"></i> Modifier ma zone bonus</button>`;
+      html += `<button class="btn btn-outline" onclick="htChangeZone('adv')" style="padding:14px;font-size:14px"><i class="ti ti-target-arrow"></i> Modifier la zone adverse</button>`;
+      if (!hasSmash) html += `<button class="btn btn-outline" id="ht-smash-btn" onclick="htSmash()" style="padding:14px;font-size:14px"><i class="ti ti-bolt"></i> Prendre une frappe bonus (Smash)</button>`;
+    } else {
+      html += `<div class="lbl" style="margin-bottom:8px">Égalité — chaque joueur peut modifier sa zone</div>`;
+      html += `<button class="btn btn-outline" onclick="htChangeZone('me')" style="padding:14px;font-size:14px"><i class="ti ti-target"></i> Modifier ma zone bonus</button>`;
+    }
+    document.getElementById('ht-options').innerHTML = html;
+    go('s-halftime');
+  } else {
+    finishMatch();
+  }
+}
+
+function htChangeZone(target) {
+  z2Target = target;
+  document.getElementById('zone2-title').textContent = target === 'me' ? 'Ma zone bonus' : 'Zone adverse';
+  document.getElementById('zone2-desc').textContent = target === 'me'
+    ? 'Choisis ta nouvelle zone bonus pour la 2ème mi-temps.'
+    : 'Modifie la zone bonus de ton adversaire pour la 2ème mi-temps.';
+  z2Sel = target === 'me' ? myZone : advZone;
+  ['lateral','front','back','none'].forEach(z => document.getElementById('z2-' + z).classList.toggle('sel', z === z2Sel));
+  document.getElementById('zone2-confirm').disabled = false;
+  go('s-zone2');
+}
+
+function htSmash() {
+  hasSmash = true;
+  const b = document.getElementById('ht-smash-btn');
+  if (b) b.style.display = 'none';
+  appendHtSummary('💥 Smash bonus ajouté');
+}
+
+function appendHtSummary(txt) {
+  const el = document.getElementById('ht-summary');
+  const chip = document.createElement('div');
+  chip.className = 'ht-chip';
+  chip.innerHTML = `<i class="ti ti-check"></i> ${txt}`;
+  el.appendChild(chip);
+}
+
+function selZ2(z) {
+  z2Sel = z;
+  ['lateral','front','back','none'].forEach(zz => document.getElementById('z2-' + zz).classList.toggle('sel', zz === z));
+  document.getElementById('zone2-confirm').disabled = false;
+}
+
+function confirmZ2() {
+  if (z2Target === 'me') { myZone = z2Sel; appendHtSummary('Ta zone → ' + ZL[z2Sel]); }
+  else { advZone = z2Sel; appendHtSummary('Zone adverse → ' + ZL[z2Sel]); }
+  go('s-halftime');
+}
+
+function startSecondHalf() {
+  currentHalf = 2;
+  timerSec = 240;
+  resetTimer();
+  setupMatch();
+  go('s-match');
+}
+
+function finishMatch() {
+  load();
+  S.pools[CM.pid].matches[CM.mid].done = true;
+  save();
+  showMatchSelect(CM.pid);
+}
+
+// ===================== RESULTS =====================
+function showResults() {
+  load();
+  const pid = S.currentPool;
+  const p = S.pools[pid];
+  const players = Object.keys(p.players || {});
+  const st = {};
+  players.forEach(n => { st[n] = { name: n, pts: 0, scored: 0, conceded: 0, w: 0, l: 0, d: 0 }; });
+  Object.values(p.matches || {}).filter(m => m.done).forEach(m => {
+    const s1 = m.score1 || 0, s2 = m.score2 || 0;
+    if (s1 > s2) { if(st[m.p1]) { st[m.p1].pts += 3; st[m.p1].w++; } if(st[m.p2]) st[m.p2].l++; }
+    else if (s2 > s1) { if(st[m.p2]) { st[m.p2].pts += 3; st[m.p2].w++; } if(st[m.p1]) st[m.p1].l++; }
+    else { if(st[m.p1]) { st[m.p1].pts += 1; st[m.p1].d++; } if(st[m.p2]) { st[m.p2].pts += 1; st[m.p2].d++; } }
+    if (st[m.p1]) { st[m.p1].scored += s1; st[m.p1].conceded += s2; }
+    if (st[m.p2]) { st[m.p2].scored += s2; st[m.p2].conceded += s1; }
+  });
+  const sorted = Object.values(st).sort((a, b) => b.pts - a.pts || (b.scored - b.conceded) - (a.scored - a.conceded));
+  const medals = ['gold', 'silver', 'bronze'];
+  document.getElementById('res-rank').innerHTML = sorted.map((s, i) => `
+    <div class="result-row">
+      <div class="rank-b ${medals[i] || ''}">${i + 1}</div>
+      <div style="flex:1;margin-left:10px">
+        <div style="font-weight:600">${s.name}</div>
+        <div style="font-size:12px;color:var(--text2)">${s.w}V ${s.d}N ${s.l}D</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:16px;font-weight:700">${s.pts} pts</div>
+        <div style="font-size:11px;color:var(--text2)">${s.scored} – ${s.conceded}</div>
+      </div>
+    </div>`).join('');
+  const ms = Object.values(p.matches || {}).filter(m => m.done);
+  document.getElementById('res-ms').innerHTML = ms.length
+    ? ms.map(m => `<div class="result-row"><div>${m.p1}</div><div style="font-weight:700;font-size:16px">${m.score1} – ${m.score2}</div><div>${m.p2}</div></div>`).join('')
+    : '<div style="font-size:13px;color:var(--text2);padding:12px 0">Aucun match terminé</div>';
+  go('s-results');
+}
+
+function showTab(t) {
+  document.getElementById('res-rank').style.display = t === 'rank' ? 'block' : 'none';
+  document.getElementById('res-ms').style.display = t === 'ms' ? 'block' : 'none';
+  document.getElementById('tab-rank').classList.toggle('active', t === 'rank');
+  document.getElementById('tab-ms').classList.toggle('active', t === 'ms');
+}
+
+function exportResults() {
+  load();
+  const p = S.pools[S.currentPool];
+  let txt = `=== ${p.name} — Résultats ===\n\n`;
+  const players = Object.keys(p.players || {});
+  const st = {};
+  players.forEach(n => { st[n] = { name: n, pts: 0, scored: 0, conceded: 0, w: 0, l: 0, d: 0 }; });
+  Object.values(p.matches || {}).filter(m => m.done).forEach(m => {
+    const s1 = m.score1 || 0, s2 = m.score2 || 0;
+    txt += `${m.p1} ${s1} – ${s2} ${m.p2}\n`;
+    if (s1 > s2) { if(st[m.p1]){st[m.p1].pts+=3;st[m.p1].w++;} if(st[m.p2])st[m.p2].l++; }
+    else if (s2 > s1) { if(st[m.p2]){st[m.p2].pts+=3;st[m.p2].w++;} if(st[m.p1])st[m.p1].l++; }
+    else { if(st[m.p1]){st[m.p1].pts++;st[m.p1].d++;} if(st[m.p2]){st[m.p2].pts++;st[m.p2].d++;} }
+    if(st[m.p1]){st[m.p1].scored+=s1;st[m.p1].conceded+=s2;} if(st[m.p2]){st[m.p2].scored+=s2;st[m.p2].conceded+=s1;}
+  });
+  const sorted = Object.values(st).sort((a,b)=>b.pts-a.pts||(b.scored-b.conceded)-(a.scored-a.conceded));
+  txt += '\n--- Classement ---\n';
+  sorted.forEach((s, i) => { txt += `${i+1}. ${s.name} — ${s.pts} pts (${s.w}V ${s.d}N ${s.l}D) — ${s.scored}/${s.conceded}\n`; });
+  navigator.clipboard.writeText(txt).then(() => alert('✅ Résultats copiés dans le presse-papier !')).catch(() => alert(txt));
+}
+
+// ===================== EVENT BINDINGS =====================
+document.getElementById('btn-open-pool').onclick = () => { load(); renderHome(); go('s-home'); };
+document.getElementById('btn-admin').onclick = () => { load(); renderAdmin(); go('s-admin'); };
+document.getElementById('admin-back').onclick = () => { load(); renderHome(); go('s-home'); };
+document.getElementById('btn-create-pool').onclick = () => {
+  const name = document.getElementById('new-pool-name').value.trim();
+  const size = parseInt(document.getElementById('new-pool-size').value);
+  if (!name) { alert('Donne un nom à la poule'); return; }
+  load();
+  const id = 'p' + Date.now();
+  S.pools[id] = { id, name, size, players: {}, matches: {} };
+  save();
+  document.getElementById('new-pool-name').value = '';
+  renderAdmin();
+};
+document.getElementById('btn-reset-all').onclick = () => {
+  if (!confirm('⚠️ Supprimer TOUTES les données de toutes les poules ?')) return;
+  localStorage.removeItem('badv2'); S = { pools: {} }; renderAdmin(); renderHome();
+};
+document.getElementById('pool-entry-back').onclick = () => { entryPlayers = []; load(); renderHome(); go('s-home'); };
+document.getElementById('btn-add-player').onclick = addEntryPlayer;
+document.getElementById('entry-name-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addEntryPlayer(); } });
+document.getElementById('btn-join-pool').onclick = joinPool;
+document.getElementById('match-select-back').onclick = () => { load(); openPool(S.currentPool); };
+document.getElementById('who-back').onclick = () => showMatchSelect(CM.pid);
+document.getElementById('zone-confirm-btn').onclick = () => { load(); S.pools[CM.pid].matches[CM.mid].myZone1 = myZone; save(); setupMatch(); go('s-match'); };
+document.getElementById('timer-btn').onclick = toggleTimer;
+document.getElementById('timer-reset').onclick = resetTimer;
+document.getElementById('end-half-btn').onclick = endHalf;
+document.getElementById('btn-start-2nd').onclick = startSecondHalf;
+document.getElementById('zone2-back').onclick = () => go('s-halftime');
+document.getElementById('zone2-confirm').onclick = confirmZ2;
+document.getElementById('results-back').onclick = () => showMatchSelect(S.currentPool);
+document.getElementById('btn-see-results').onclick = showResults;
+document.getElementById('btn-export').onclick = exportResults;
+
+// ===================== INIT =====================
+load();
+renderHome();
+</script>
+</body>
+</html>
