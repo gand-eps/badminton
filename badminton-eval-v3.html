@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>🏸 Badminton Éval</title>
+<style>
+:root {
+  --green:#1a472a; --yellow:#f0e060; --green-light:#e6f0ea;
+  --red:#c0392b; --orange:#e67e22;
+  --bg:#f5f5f3; --bg2:#eeecea; --surface:#ffffff;
+  --border:rgba(0,0,0,0.12); --border2:rgba(0,0,0,0.22);
+  --text:#1a1a18; --text2:#6b6b68; --text3:#9b9b98;
+  --radius:10px; --radius-lg:14px;
+  --warn-bg:#fef3cd; --warn-text:#7d5a00;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111210;--bg2:#1c1c1a;--surface:#222220;
+  --border:rgba(255,255,255,0.12);--border2:rgba(255,255,255,0.22);
+  --text:#f0f0ee;--text2:#a0a09e;--text3:#606060;
+  --green-light:#0e2916;--warn-bg:#3a2e00;--warn-text:#ffd060;
+}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text)}
+.app{max-width:480px;margin:0 auto;min-height:100vh}
+.screen{display:none}.screen.active{display:block}
+
+/* HEADER */
+.hdr{background:var(--green);color:var(--yellow);padding:14px 16px 12px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;box-shadow:var(--shadow)}
+.hdr h1{font-size:17px;font-weight:600;letter-spacing:.3px;flex:1}
+.back{background:none;border:none;color:var(--yellow);font-size:24px;cursor:pointer;padding:0 8px 0 0;line-height:1}
+.badge{background:var(--yellow);color:var(--green);font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.badge.red{background:#ff6b6b;color:#fff}
+.badge.orange{background:#ffa94d;color:#7d3800}
+
+/* LAYOUT */
+.sec{padding:16px}
+.lbl{font-size:11px;color:var(--text2);margin-bottom:7px;font-weight:600;text-transform:uppercase;letter-spacing:.6px}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.hero{background:var(--green);color:var(--yellow);padding:28px 20px 22px;text-align:center}
+.hero .icon{font-size:40px;margin-bottom:8px}
+.hero h1{font-size:22px;font-weight:700}
+.hero .sub{font-size:13px;color:rgba(240,224,96,.75);margin-top:4px}
+
+/* BUTTONS */
+.btn{width:100%;padding:16px;font-size:16px;font-weight:600;border-radius:var(--radius-lg);border:none;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:9px;transition:opacity .15s,transform .1s;-webkit-appearance:none}
+.btn:active{opacity:.75;transform:scale(.98)}.btn:disabled{opacity:.4;cursor:default;transform:none}
+.btn-green{background:var(--green);color:var(--yellow)}
+.btn-yellow{background:var(--yellow);color:var(--green)}
+.btn-outline{background:var(--bg2);color:var(--text);border:1px solid var(--border2)}
+.btn-danger{background:var(--bg2);color:var(--red);border:1px solid var(--red)}
+.btn-sheets{background:#188038;color:#fff}
+.btn-sm{padding:8px 14px;font-size:13px;border-radius:var(--radius);margin-bottom:0;width:auto}
+
+/* INPUTS */
+.inp{width:100%;padding:13px 14px;font-size:16px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);margin-bottom:10px;-webkit-appearance:none}
+.inp:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(26,71,42,.15)}
+.sel{width:100%;padding:13px 14px;font-size:15px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);margin-bottom:10px;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:10px;cursor:pointer;box-shadow:var(--shadow)}
+.card:active{border-color:var(--green)}.card.done{opacity:.6;cursor:default}.card.active-match{border-color:var(--green);background:var(--green-light)}
+.card-title{font-size:15px;font-weight:600}.card-sub{font-size:12px;color:var(--text2);margin-top:3px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;min-height:44px;margin-bottom:10px;gap:4px;align-items:flex-start}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:99px;font-size:14px;font-weight:500;background:var(--green-light);color:var(--green)}
+.chip .x{background:none;border:none;color:var(--green);cursor:pointer;font-size:17px;line-height:1;padding:0;opacity:.7}
+.chip .x:active{opacity:1}
+
+/* ALERT */
+.alert{background:var(--warn-bg);color:var(--warn-text);border-radius:var(--radius);padding:11px 14px;font-size:13px;margin-bottom:14px;line-height:1.5}
+
+/* ZONES */
+.zone-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.zone-btn{padding:18px 8px 14px;border-radius:var(--radius-lg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:13px;font-weight:500;background:var(--bg2);color:var(--text);transition:all .15s;line-height:1.4}
+.zone-btn:active{transform:scale(.97)}.zone-btn.sel{border-color:var(--green);background:var(--green-light);color:var(--green)}
+.zone-btn .zi{font-size:28px;margin-bottom:6px;display:block}.zone-btn.no-zone{border-style:dashed;opacity:.65}
+
+/* SCORE */
+.score-area{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.sc{border-radius:var(--radius-lg);padding:16px 10px;text-align:center}
+.sc.me{background:var(--green);color:var(--yellow)}.sc.adv{background:var(--bg2);color:var(--text)}
+.sc-name{font-size:13px;font-weight:500;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-num{font-size:44px;font-weight:700;line-height:1}.sc-zone{font-size:11px;margin-top:4px;opacity:.8}
+
+/* HALF BAR */
+.half-bar{display:flex;gap:8px;margin-bottom:12px}
+.half-pill{flex:1;padding:7px;text-align:center;border-radius:99px;font-size:12px;font-weight:600;background:var(--bg2);color:var(--text2)}
+.half-pill.active{background:var(--green);color:var(--yellow)}
+
+/* POINT BUTTONS */
+.pt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.pt-btn{padding:22px 10px;border-radius:var(--radius-lg);border:none;font-size:15px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:transform .1s}
+.pt-btn:active{transform:scale(.95)}.pt-lbl{font-size:11px;opacity:.8}
+.pt-me{background:var(--green);color:var(--yellow)}.pt-adv{background:var(--bg2);color:var(--text);border:1px solid var(--border2)}
+.pt-bme{background:#fdf9e0;color:#6b5a00}.pt-badv{background:var(--bg2);color:var(--text);border:1px dashed var(--border2)}
+
+/* SMASH */
+.smash-btn{width:100%;padding:15px;border-radius:var(--radius-lg);border:none;background:var(--red);color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.smash-btn:active{opacity:.8}
+
+/* TIMER */
+.timer{font-size:50px;font-weight:700;text-align:center;color:var(--green);margin:8px 0;letter-spacing:3px;font-variant-numeric:tabular-nums}
+.timer.warn{color:var(--red)}
+
+/* LOG */
+.mini-log{margin:8px 0;max-height:80px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px}
+.log-e{font-size:12px;color:var(--text2);padding:3px 0;border-bottom:1px solid var(--border)}.log-e:last-child{border-bottom:none}
+
+/* RESULTS */
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px}.result-row:last-child{border-bottom:none}
+.rank-b{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--bg2);color:var(--text2);flex-shrink:0}
+.rank-b.gold{background:var(--yellow);color:var(--green)}.rank-b.silver{background:#ddd;color:#555}.rank-b.bronze{background:#e8c89a;color:#7a4800}
+.tabs{display:flex;border-bottom:1px solid var(--border2);margin-bottom:14px}
+.tab{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent}
+.tab.active{color:var(--green);border-bottom-color:var(--green)}
+
+/* HT chips */
+.ht-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:99px;background:var(--green-light);color:var(--green);font-size:13px;margin:3px;font-weight:500}
+
+/* Sheets status */
+.sheets-status{font-size:13px;padding:10px 14px;border-radius:var(--radius);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sheets-status.ok{background:#e6f4ea;color:#188038}.sheets-status.err{background:#fce8e6;color:#c5221f}.sheets-status.pending{background:var(--bg2);color:var(--text2)}
+
+/* Progress bar */
+.progress-bar{height:4px;background:var(--border);border-radius:99px;margin-bottom:14px;overflow:hidden}
+.progress-fill{height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+
+/* Number input row */
+.num-row{display:flex;align-items:center;gap:0;margin-bottom:10px;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden}
+.num-row .dec,.num-row .inc{background:var(--bg2);border:none;color:var(--text);font-size:22px;padding:12px 18px;cursor:pointer;font-weight:300;flex-shrink:0}
+.num-row .dec:active,.num-row .inc:active{background:var(--border2)}
+.num-row .num-val{flex:1;text-align:center;font-size:20px;font-weight:600;background:var(--surface);border:none;color:var(--text);padding:12px 0}
+
+/* vs pill */
+.vs-pill{background:var(--green);color:var(--yellow);border-radius:var(--radius);padding:5px 12px;font-size:13px;font-weight:600}
+
+/* Setup steps indicator */
+.steps{display:flex;gap:0;margin-bottom:20px}
+.step{flex:1;text-align:center;font-size:11px;font-weight:600;padding:8px 4px;color:var(--text3);position:relative}
+.step::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border)}
+.step.done::after,.step.current::after{background:var(--green)}
+.step.current{color:var(--green)}.step.done{color:var(--text2)}
+
+/* Info box */
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.6}
+.info-box strong{color:var(--green)}
+.code-block{background:var(--bg2);border-radius:var(--radius);padding:10px 12px;font-family:monospace;font-size:12px;margin:8px 0;color:var(--text);overflow-x:auto;white-space:pre-wrap;word-break:break-all;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="s-home">
+  <div class="hero">
+    <div class="icon">🏸</div>
+    <h1>Badminton Éval</h1>
+    <div class="sub">EPS – Matchs en poule</div>
+  </div>
+  <div class="sec">
+    <button class="btn btn-green" id="btn-new-session">
+      ➕ Nouvelle session
+    </button>
+    <div id="home-sessions"></div>
+    <div class="divider"></div>
+    <div class="lbl">Paramètres export</div>
+    <button class="btn btn-outline" id="btn-config-sheets">
+      📊 Configurer l'export Google Sheets
+    </button>
+    <div id="sheets-config-status"></div>
+    <button class="btn btn-danger" id="btn-reset-all">
+      🗑 Tout réinitialiser
+    </button>
+  </div>
+</div>
+
+<!-- ===== SETUP : POULE ===== -->
+<div class="screen" id="s-setup">
+  <div class="hdr">
+    <button class="back" id="setup-back">←</button>
+    <h1>Nouvelle session</h1>
+  </div>
+  <div class="sec">
+    <!-- Steps -->
+    <div class="steps">
+      <div class="step current" id="step1">① Poule</div>
+      <div class="step" id="step2">② Joueurs</div>
+      <div class="step" id="step3">③ Matchs</div>
+    </div>
+
+    <!-- Step 1 : nom + taille -->
+    <div id="setup-s1">
+      <div class="lbl">Nom de la poule / classe</div>
+      <input class="inp" id="setup-pool-name" placeholder="Ex: Terrain A – TES1" autocomplete="off">
+      <div class="lbl">Nombre de joueurs</div>
+      <div class="num-row">
+        <button class="dec" onclick="changeSize(-1)">−</button>
+        <div class="num-val" id="size-val">3</div>
+        <button class="inc" onclick="changeSize(+1)">+</button>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:16px" id="size-info">3 joueurs → 3 matchs</div>
+      <button class="btn btn-green" id="btn-go-step2">Suivant →</button>
+    </div>
+
+    <!-- Step 2 : joueurs -->
+    <div id="setup-s2" style="display:none">
+      <div class="lbl">Joueurs <span id="players-count-lbl" style="font-weight:400;text-transform:none;font-size:12px;color:var(--text2)"></span></div>
+      <div class="chips" id="setup-chips"></div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="inp" id="setup-player-inp" placeholder="Prénom" style="margin:0;flex:1" maxlength="20" autocomplete="off" autocapitalize="words">
+        <button class="btn btn-green btn-sm" id="btn-add-player" style="flex-shrink:0;padding:0 18px">+</button>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:14px" id="setup-player-hint">Ajoute tous les joueurs.</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" id="btn-back-s1" style="flex:1;padding:12px;font-size:14px;margin:0">← Retour</button>
+        <button class="btn btn-green" id="btn-go-step3" style="flex:2;padding:12px;font-size:14px;margin:0" disabled>Suivant →</button>
+      </div>
+    </div>
+
+    <!-- Step 3 : confirmation + génération -->
+    <div id="setup-s3" style="display:none">
+      <div class="lbl">Récapitulatif</div>
+      <div class="info-box" id="setup-recap"></div>
+      <div class="lbl">Matchs générés</div>
+      <div id="setup-matches-preview"></div>
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button class="btn btn-outline" id="btn-back-s2" style="flex:1;padding:12px;font-size:14px;margin:0">← Retour</button>
+        <button class="btn btn-green" id="btn-start-session" style="flex:2;padding:12px;font-size:14px;margin:0">🚀 Lancer la session</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MATCH LIST ===== -->
+<div class="screen" id="s-matchlist">
+  <div class="hdr">
+    <button class="back" id="matchlist-back">←</button>
+    <h1 id="matchlist-title">Matchs</h1>
+    <div class="badge" id="matchlist-badge">0/0</div>
+  </div>
+  <div class="sec">
+    <div class="progress-bar"><div class="progress-fill" id="match-progress" style="width:0%"></div></div>
+    <div id="match-list"></div>
+    <div class="divider"></div>
+    <button class="btn btn-yellow" id="btn-go-results">
+      🏆 Voir le classement
+    </button>
+  </div>
+</div>
+
+<!-- ===== WHO PLAYS (si ambigu) ===== -->
+<div class="screen" id="s-who">
+  <div class="hdr">
+    <button class="back" id="who-back">←</button>
+    <h1>Qui commence à saisir ?</h1>
+  </div>
+  <div class="sec">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Choisis qui tient le téléphone — son score apparaîtra en vert.</div>
+    <div id="who-btns"></div>
+  </div>
+</div>
+
+<!-- ===== ZONE CHOICE ===== -->
+<div class="screen" id="s-zone">
+  <div class="hdr">
+    <h1 id="zone-player-name">Zone bonus</h1>
+    <div class="badge" id="zone-badge">1ère MT</div>
+  </div>
+  <div class="sec">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px">
+      Un volant dans ta zone compte <strong>double</strong>. Choisis stratégiquement !
+    </div>
+    <div class="zone-grid">
+      <button class="zone-btn" onclick="selectZone('lateral')" id="zbtn-lateral"><span class="zi">↔️</span>Couloirs latéraux</button>
+      <button class="zone-btn" onclick="selectZone('front')" id="zbtn-front"><span class="zi">⬆️</span>Zone avant</button>
+      <button class="zone-btn" onclick="selectZone('back')" id="zbtn-back"><span class="zi">⬇️</span>Zone arrière</button>
+      <button class="zone-btn no-zone" onclick="selectZone('none')" id="zbtn-none"><span class="zi">➖</span>Sans zone</button>
+    </div>
+    <button class="btn btn-green" id="zone-confirm-btn" disabled>✓ Confirmer</button>
+  </div>
+</div>
+
+<!-- ===== MATCH ===== -->
+<div class="screen" id="s-match">
+  <div class="hdr">
+    <h1 id="match-title">Match</h1>
+    <div class="badge" id="match-badge">1ère MT</div>
+  </div>
+  <div class="sec">
+    <div class="half-bar">
+      <div class="half-pill active" id="hp1">1ère mi-temps</div>
+      <div class="half-pill" id="hp2">2ème mi-temps</div>
+    </div>
+
+    <div class="timer" id="match-timer">4:00</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn btn-green" id="timer-btn" style="margin:0;flex:1;padding:13px;font-size:14px">▶ Démarrer</button>
+      <button class="btn btn-outline" id="timer-reset-btn" style="margin:0;padding:13px 16px;font-size:14px">↺</button>
+    </div>
+
+    <div class="score-area">
+      <div class="sc me">
+        <div class="sc-name" id="sc-my-name">Moi</div>
+        <div class="sc-num" id="sc-my-num">0</div>
+        <div class="sc-zone" id="sc-my-zone"></div>
+      </div>
+      <div class="sc adv">
+        <div class="sc-name" id="sc-adv-name">Adv</div>
+        <div class="sc-num" id="sc-adv-num">0</div>
+        <div class="sc-zone" style="color:var(--text2)" id="sc-adv-zone"></div>
+      </div>
+    </div>
+
+    <div id="smash-row" style="display:none">
+      <button class="smash-btn" id="smash-btn" onclick="useSmash()">💥 Frappe bonus — Smash !</button>
+    </div>
+
+    <div class="pt-grid">
+      <button class="pt-btn pt-me" onclick="addPt('me')">
+        <div style="font-size:28px;font-weight:700">+1</div>
+        <div class="pt-lbl" id="pt-me-lbl">Mon point</div>
+      </button>
+      <button class="pt-btn pt-adv" onclick="addPt('adv')">
+        <div style="font-size:28px;font-weight:700">+1</div>
+        <div class="pt-lbl" id="pt-adv-lbl">Point adversaire</div>
+      </button>
+    </div>
+
+    <div id="bonus-row" style="display:none">
+      <div class="pt-grid" style="margin-bottom:0">
+        <button class="pt-btn pt-bme" onclick="addPt('me-bonus')"><div style="font-size:22px">⭐ +2</div><div class="pt-lbl">Bonus moi</div></button>
+        <button class="pt-btn pt-badv" onclick="addPt('adv-bonus')"><div style="font-size:22px">⭐ +2</div><div class="pt-lbl">Bonus adv.</div></button>
+      </div>
+    </div>
+
+    <div class="mini-log" id="match-log"><div class="log-e" style="text-align:center;color:var(--text3)">Aucun point encore</div></div>
+
+    <button class="btn btn-yellow" id="end-half-btn" style="margin-top:10px">🏁 Fin de mi-temps / Concertation</button>
+  </div>
+</div>
+
+<!-- ===== HALFTIME ===== -->
+<div class="screen" id="s-ht">
+  <div class="hdr"><h1>Concertation</h1><div class="badge">Pause</div></div>
+  <div class="sec">
+    <div class="alert">Le joueur qui perd peut modifier les zones et options pour la 2ème mi-temps.</div>
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <div style="flex:1;padding:14px;background:var(--green);color:var(--yellow);border-radius:var(--radius-lg);text-align:center">
+        <div style="font-size:13px;font-weight:500" id="ht-n1"></div>
+        <div style="font-size:34px;font-weight:700" id="ht-s1">0</div>
+      </div>
+      <div style="flex:1;padding:14px;background:var(--bg2);border-radius:var(--radius-lg);text-align:center">
+        <div style="font-size:13px;font-weight:500" id="ht-n2"></div>
+        <div style="font-size:34px;font-weight:700" id="ht-s2">0</div>
+      </div>
+    </div>
+    <div id="ht-options"></div>
+    <div id="ht-summary" style="margin-bottom:12px;display:flex;flex-wrap:wrap"></div>
+    <button class="btn btn-green" id="btn-start-2nd">▶ Lancer la 2ème mi-temps</button>
+  </div>
+</div>
+
+<!-- ===== ZONE2 ===== -->
+<div class="screen" id="s-zone2">
+  <div class="hdr">
+    <button class="back" id="zone2-back">←</button>
+    <h1 id="zone2-title">Modifier la zone</h1>
+  </div>
+  <div class="sec">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:14px" id="zone2-desc"></div>
+    <div class="zone-grid">
+      <button class="zone-btn" onclick="selZ2('lateral')" id="z2-lateral"><span class="zi">↔️</span>Couloirs latéraux</button>
+      <button class="zone-btn" onclick="selZ2('front')" id="z2-front"><span class="zi">⬆️</span>Zone avant</button>
+      <button class="zone-btn" onclick="selZ2('back')" id="z2-back"><span class="zi">⬇️</span>Zone arrière</button>
+      <button class="zone-btn no-zone" onclick="selZ2('none')" id="z2-none"><span class="zi">➖</span>Sans zone</button>
+    </div>
+    <button class="btn btn-green" id="zone2-confirm" disabled>✓ Confirmer</button>
+  </div>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div class="screen" id="s-results">
+  <div class="hdr">
+    <button class="back" id="results-back">←</button>
+    <h1 id="results-title">Classement</h1>
+    <div class="badge" id="results-badge"></div>
+  </div>
+  <div class="sec">
+    <div class="tabs">
+      <div class="tab active" id="tab-rank" onclick="showTab('rank')">Classement</div>
+      <div class="tab" id="tab-ms" onclick="showTab('ms')">Matchs</div>
+    </div>
+    <div id="res-rank"></div>
+    <div id="res-ms" style="display:none"></div>
+    <div class="divider"></div>
+    <div id="export-section">
+      <div class="lbl">Export</div>
+      <button class="btn btn-sheets" id="btn-export-sheets">📊 Envoyer vers Google Sheets</button>
+      <div id="sheets-export-status"></div>
+      <button class="btn btn-outline" id="btn-export-copy">📋 Copier en texte</button>
+    </div>
+    <div class="divider"></div>
+    <button class="btn btn-outline" id="btn-new-from-results">➕ Nouvelle session</button>
+  </div>
+</div>
+
+<!-- ===== CONFIG SHEETS ===== -->
+<div class="screen" id="s-sheets-config">
+  <div class="hdr">
+    <button class="back" id="sheets-config-back">←</button>
+    <h1>Export Google Sheets</h1>
+  </div>
+  <div class="sec">
+    <div class="alert">📋 Suis les étapes ci-dessous pour connecter ton Google Sheet. C'est à faire une seule fois.</div>
+
+    <div class="lbl">Étape 1 — Créer le Google Sheet</div>
+    <div class="info-box">
+      Va sur <strong>sheets.google.com</strong>, crée un nouveau fichier, nomme le premier onglet <strong>Resultats</strong> (sans accent).
+    </div>
+
+    <div class="lbl">Étape 2 — Ouvrir Apps Script</div>
+    <div class="info-box">
+      Dans ton Google Sheet : menu <strong>Extensions → Apps Script</strong>.<br>
+      Efface tout le code présent, puis colle exactement ce code :
+    </div>
+    <div class="code-block" id="apps-script-code"></div>
+    <button class="btn btn-outline" id="btn-copy-script" style="margin-bottom:14px">📋 Copier le code Apps Script</button>
+
+    <div class="lbl">Étape 3 — Déployer</div>
+    <div class="info-box">
+      Clique sur <strong>Déployer → Nouveau déploiement</strong>.<br>
+      Type : <strong>Application Web</strong>.<br>
+      "Exécuter en tant que" : <strong>Moi</strong>.<br>
+      "Qui a accès" : <strong>Tout le monde</strong>.<br>
+      Clique <strong>Déployer</strong>, autorise l'accès, puis <strong>copie l'URL</strong> fournie.
+    </div>
+
+    <div class="lbl">Étape 4 — Coller l'URL ici</div>
+    <input class="inp" id="sheets-url-input" placeholder="https://script.google.com/macros/s/..." autocomplete="off">
+    <button class="btn btn-green" id="btn-save-sheets-url">💾 Enregistrer l'URL</button>
+    <div id="sheets-url-status"></div>
+    <div id="saved-url-display" style="font-size:12px;color:var(--text2);margin-top:6px;word-break:break-all"></div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ================================================================
+// STATE
+// ================================================================
+const ZL = {lateral:'Couloirs latéraux',front:'Zone avant',back:'Zone arrière',none:'Sans zone'};
+let S = {};
+function load(){try{S=JSON.parse(localStorage.getItem('badevalv3')||'{}');}catch(e){S={};}
+  if(!S.sessions)S.sessions={};
+  if(!S.sheetsUrl)S.sheetsUrl='';
+}
+function save(){localStorage.setItem('badevalv3',JSON.stringify(S));}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+// Match runtime
+let CM=null; // {sid, mid, myName, advName, myKey, advKey}
+let timerInt=null,timerOn=false,timerSec=240;
+let myZone='none',advZone='none',hasSmash=false;
+let mLog=[],currentHalf=1;
+let z2Target=null,z2Sel=null;
+
+// Setup state
+let setupSize=3, setupPlayers=[];
+
+// ================================================================
+// HOME
+// ================================================================
+function renderHome(){
+  load();
+  const sessions=Object.values(S.sessions||{}).sort((a,b)=>b.createdAt-a.createdAt);
+  const el=document.getElementById('home-sessions');
+  if(!sessions.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text2);padding:14px 0;text-align:center">Aucune session — crée-en une nouvelle !</div>';
+  } else {
+    el.innerHTML='<div class="lbl" style="margin-top:4px">Sessions existantes</div>'+sessions.map(s=>{
+      const total=Object.values(s.matches||{}).length;
+      const done=Object.values(s.matches||{}).filter(m=>m.done).length;
+      const allDone=total>0&&done===total;
+      return `<div class="card" onclick="openSession('${s.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="card-title">${s.name}</div>
+          <div class="badge ${allDone?'':'orange'}">${done}/${total}</div>
+        </div>
+        <div class="card-sub">${Object.keys(s.players||{}).join(', ')}</div>
+      </div>`;
+    }).join('');
+  }
+  // sheets status
+  const st=document.getElementById('sheets-config-status');
+  if(S.sheetsUrl){
+    st.innerHTML=`<div class="sheets-status ok">✅ Google Sheets configuré</div>`;
+  } else {
+    st.innerHTML=`<div class="sheets-status pending">⚠️ Export non configuré</div>`;
+  }
+}
+
+function openSession(sid){
+  load();
+  S.currentSession=sid;
+  save();
+  showMatchList(sid);
+}
+
+// ================================================================
+// SETUP
+// ================================================================
+setupSize=3;
+setupPlayers=[];
+
+function changeSize(delta){
+  setupSize=Math.min(6,Math.max(2,setupSize+delta));
+  document.getElementById('size-val').textContent=setupSize;
+  const n=setupSize;
+  const nm=n*(n-1)/2;
+  document.getElementById('size-info').textContent=`${n} joueurs → ${nm} match${nm>1?'s':''}`;
+}
+
+function updateSetupStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('step'+i);
+    el.className='step'+(i<n?' done':i===n?' current':'');
+  });
+}
+
+function renderSetupChips(){
+  const el=document.getElementById('setup-chips');
+  el.innerHTML=setupPlayers.length
+    ? setupPlayers.map(n=>`<div class="chip">${n}<button class="x" onclick="rmSetupPlayer('${n}')">×</button></div>`).join('')
+    : '<span style="font-size:13px;color:var(--text2);padding:6px 0">Aucun joueur</span>';
+  const btn=document.getElementById('btn-go-step3');
+  btn.disabled=setupPlayers.length<setupSize;
+  document.getElementById('players-count-lbl').textContent=`(${setupPlayers.length}/${setupSize})`;
+  document.getElementById('setup-player-hint').textContent=setupPlayers.length>=setupSize
+    ? '✅ Tous les joueurs sont ajoutés !'
+    : `Encore ${setupSize-setupPlayers.length} joueur(s) à ajouter`;
+}
+
+function addSetupPlayer(){
+  const inp=document.getElementById('setup-player-inp');
+  const name=inp.value.trim();
+  if(!name)return;
+  if(setupPlayers.includes(name)){alert('Ce prénom est déjà dans la liste !');return;}
+  if(setupPlayers.length>=setupSize){alert(`Maximum ${setupSize} joueurs`);return;}
+  setupPlayers.push(name);
+  inp.value='';
+  inp.focus();
+  renderSetupChips();
+}
+
+function rmSetupPlayer(name){setupPlayers=setupPlayers.filter(n=>n!==name);renderSetupChips();}
+
+function showStep(n){
+  [1,2,3].forEach(i=>document.getElementById(`setup-s${i}`).style.display=i===n?'block':'none');
+  updateSetupStep(n);
+}
+
+function buildMatchPreview(players){
+  let html='',mi=0;
+  for(let i=0;i<players.length;i++)
+    for(let j=i+1;j<players.length;j++){
+      html+=`<div class="card" style="cursor:default;padding:10px 14px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:14px;font-weight:500">${players[i]} <span style="color:var(--text2);font-weight:400">vs</span> ${players[j]}</div>
+          <div style="font-size:12px;color:var(--text3)">Match ${++mi}</div>
+        </div>
+      </div>`;
+    }
+  return html;
+}
+
+function goStep3(){
+  const nm=setupPlayers.length*(setupPlayers.length-1)/2;
+  document.getElementById('setup-recap').innerHTML=
+    `<strong>Poule :</strong> ${document.getElementById('setup-pool-name').value.trim()||'Sans nom'}<br>
+     <strong>Joueurs :</strong> ${setupPlayers.join(', ')}<br>
+     <strong>Matchs générés :</strong> ${nm}`;
+  document.getElementById('setup-matches-preview').innerHTML=buildMatchPreview(setupPlayers);
+  showStep(3);
+}
+
+function startSession(){
+  load();
+  const name=document.getElementById('setup-pool-name').value.trim()||'Poule sans nom';
+  const sid='s'+Date.now();
+  const players={};
+  setupPlayers.forEach(n=>{players[n]={name,joinedAt:Date.now()};});
+  const matches={};
+  let mi=0;
+  for(let i=0;i<setupPlayers.length;i++)
+    for(let j=i+1;j<setupPlayers.length;j++){
+      const id='m'+mi++;
+      matches[id]={id,p1:setupPlayers[i],p2:setupPlayers[j],done:false,score1:0,score2:0};
+    }
+  S.sessions[sid]={id:sid,name,players,matches,createdAt:Date.now()};
+  S.currentSession=sid;
+  save();
+  setupPlayers=[];setupSize=3;
+  showMatchList(sid);
+}
+
+// ================================================================
+// MATCH LIST
+// ================================================================
+function showMatchList(sid){
+  load();
+  const p=S.sessions[sid];
+  if(!p){go('s-home');return;}
+  document.getElementById('matchlist-title').textContent=p.name;
+  const matches=Object.values(p.matches||{});
+  const done=matches.filter(m=>m.done).length;
+  document.getElementById('matchlist-badge').textContent=`${done}/${matches.length}`;
+  document.getElementById('match-progress').style.width=matches.length?`${(done/matches.length)*100}%`:'0%';
+  const el=document.getElementById('match-list');
+  if(!matches.length){
+    el.innerHTML='<div style="font-size:13px;color:var(--text2);padding:12px 0">Aucun match.</div>';
+  } else {
+    el.innerHTML=matches.map(m=>`
+      <div class="card ${m.done?'done':''}" onclick="${m.done?'':'startMatchFlow(\''+sid+'\',\''+m.id+'\')'}" >
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="card-title">${m.p1} <span style="color:var(--text2);font-weight:400">vs</span> ${m.p2}</div>
+            <div class="card-sub">${m.done?'✅ Terminé — '+m.score1+' / '+m.score2:'Prêt à jouer'}</div>
+          </div>
+          ${m.done?'<span style="font-size:20px;color:var(--green)">✓</span>':'<div class="vs-pill">Jouer</div>'}
+        </div>
+      </div>`).join('');
+  }
+  go('s-matchlist');
+}
+
+// ================================================================
+// WHO PLAYS
+// ================================================================
+function startMatchFlow(sid,mid){
+  load();
+  CM={sid,mid};
+  const m=S.sessions[sid].matches[mid];
+  document.getElementById('who-btns').innerHTML=[m.p1,m.p2].map(n=>`
+    <button style="width:100%;padding:18px;font-size:18px;font-weight:600;border-radius:var(--radius-lg);border:2px solid transparent;cursor:pointer;margin-bottom:10px;background:var(--bg2);color:var(--text);display:flex;align-items:center;gap:14px;-webkit-appearance:none" onclick="choosePOV('${n}')">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0">${n[0].toUpperCase()}</div>
+      ${n}
+    </button>`).join('');
+  go('s-who');
+}
+
+function choosePOV(name){
+  load();
+  const {sid,mid}=CM;
+  const m=S.sessions[sid].matches[mid];
+  CM.myName=name;
+  CM.advName=name===m.p1?m.p2:m.p1;
+  CM.myKey=name===m.p1?'score1':'score2';
+  CM.advKey=name===m.p1?'score2':'score1';
+  currentHalf=1;mLog=[];myZone='none';advZone='none';hasSmash=false;
+  resetTimer();
+  document.getElementById('zone-badge').textContent='1ère MT';
+  document.getElementById('zone-player-name').textContent=`${name} — Zone bonus`;
+  ['lateral','front','back','none'].forEach(z=>document.getElementById('zbtn-'+z).classList.remove('sel'));
+  document.getElementById('zone-confirm-btn').disabled=true;
+  go('s-zone');
+}
+
+// ================================================================
+// ZONE
+// ================================================================
+function selectZone(z){
+  myZone=z;
+  ['lateral','front','back','none'].forEach(zz=>document.getElementById('zbtn-'+zz).classList.toggle('sel',zz===z));
+  document.getElementById('zone-confirm-btn').disabled=false;
+}
+
+// ================================================================
+// MATCH
+// ================================================================
+function setupMatch(){
+  load();
+  const {sid,mid,myName,advName,myKey,advKey}=CM;
+  const m=S.sessions[sid].matches[mid];
+  document.getElementById('match-title').textContent=`${myName} vs ${advName}`;
+  document.getElementById('match-badge').textContent=currentHalf===1?'1ère MT':'2ème MT';
+  document.getElementById('hp1').classList.toggle('active',currentHalf===1);
+  document.getElementById('hp2').classList.toggle('active',currentHalf===2);
+  document.getElementById('sc-my-name').textContent=myName;
+  document.getElementById('sc-adv-name').textContent=advName;
+  document.getElementById('sc-my-zone').textContent=myZone!=='none'?'⭐ '+ZL[myZone]:'';
+  document.getElementById('sc-adv-zone').textContent=advZone!=='none'?'⭐ '+ZL[advZone]:'';
+  document.getElementById('bonus-row').style.display=(myZone!=='none'||advZone!=='none')?'block':'none';
+  document.getElementById('smash-row').style.display=hasSmash?'block':'none';
+  document.getElementById('pt-me-lbl').textContent=myName;
+  document.getElementById('pt-adv-lbl').textContent=advName;
+  document.getElementById('end-half-btn').textContent=currentHalf===1?'🏁 Fin 1ère MT / Concertation':'🏁 Terminer le match';
+  updateScores();renderLog();
+}
+
+function updateScores(){
+  load();
+  if(!CM)return;
+  const m=S.sessions[CM.sid].matches[CM.mid];
+  document.getElementById('sc-my-num').textContent=m[CM.myKey]||0;
+  document.getElementById('sc-adv-num').textContent=m[CM.advKey]||0;
+}
+
+function addPt(who){
+  load();
+  const {sid,mid,myKey,advKey,myName,advName}=CM;
+  const m=S.sessions[sid].matches[mid];
+  let label='';
+  if(who==='me'){m[myKey]=(m[myKey]||0)+1;label=`+1 ${myName}`;}
+  else if(who==='adv'){m[advKey]=(m[advKey]||0)+1;label=`+1 ${advName}`;}
+  else if(who==='me-bonus'){m[myKey]=(m[myKey]||0)+2;label=`⭐ +2 ${myName} (zone)`;}
+  else if(who==='adv-bonus'){m[advKey]=(m[advKey]||0)+2;label=`⭐ +2 ${advName} (zone)`;}
+  save();
+  mLog.unshift({t:fmtTime(240-timerSec),label});
+  renderLog();updateScores();
+}
+
+function useSmash(){
+  if(!hasSmash)return;
+  load();
+  const{sid,mid,myKey,myName}=CM;
+  S.sessions[sid].matches[mid][myKey]=(S.sessions[sid].matches[mid][myKey]||0)+2;
+  hasSmash=false;save();
+  mLog.unshift({t:fmtTime(240-timerSec),label:`💥 +2 ${myName} (Smash)`});
+  renderLog();updateScores();
+  document.getElementById('smash-row').style.display='none';
+}
+
+function renderLog(){
+  const el=document.getElementById('match-log');
+  if(!mLog.length){el.innerHTML='<div class="log-e" style="text-align:center;color:var(--text3)">Aucun point encore</div>';return;}
+  el.innerHTML=mLog.slice(0,8).map(e=>`<div class="log-e">${e.t} — ${e.label}</div>`).join('');
+}
+
+// ================================================================
+// TIMER
+// ================================================================
+function toggleTimer(){
+  if(timerOn){
+    clearInterval(timerInt);timerOn=false;
+    document.getElementById('timer-btn').textContent='▶ Reprendre';
+  } else {
+    timerOn=true;
+    document.getElementById('timer-btn').textContent='⏸ Pause';
+    timerInt=setInterval(()=>{
+      timerSec--;
+      document.getElementById('match-timer').textContent=fmtTime(timerSec);
+      document.getElementById('match-timer').classList.toggle('warn',timerSec<=30);
+      if(timerSec<=0){clearInterval(timerInt);timerOn=false;document.getElementById('timer-btn').textContent='▶ Démarrer';}
+    },1000);
+  }
+}
+function resetTimer(){
+  clearInterval(timerInt);timerOn=false;timerSec=240;
+  const t=document.getElementById('match-timer');if(t){t.textContent='4:00';t.classList.remove('warn');}
+  const b=document.getElementById('timer-btn');if(b)b.textContent='▶ Démarrer';
+}
+function fmtTime(s){const m=Math.floor(Math.max(s,0)/60);return m+':'+(Math.max(s,0)%60).toString().padStart(2,'0');}
+
+// ================================================================
+// HALF TIME
+// ================================================================
+function endHalf(){
+  clearInterval(timerInt);timerOn=false;
+  if(currentHalf===1){
+    load();
+    const{sid,mid,myName,advName,myKey,advKey}=CM;
+    const m=S.sessions[sid].matches[mid];
+    const ms=m[myKey]||0,as=m[advKey]||0;
+    document.getElementById('ht-n1').textContent=myName;
+    document.getElementById('ht-n2').textContent=advName;
+    document.getElementById('ht-s1').textContent=ms;
+    document.getElementById('ht-s2').textContent=as;
+    document.getElementById('ht-summary').innerHTML='';
+    const eq=ms===as;
+    let html='';
+    if(!eq){
+      const loserName=ms<as?myName:advName;
+      html+=`<div class="lbl" style="margin-bottom:8px">Options du perdant (${loserName})</div>`;
+      html+=`<button class="btn btn-outline" onclick="htChangeZone('me')" style="padding:14px;font-size:14px">🎯 Modifier ma zone bonus</button>`;
+      html+=`<button class="btn btn-outline" onclick="htChangeZone('adv')" style="padding:14px;font-size:14px">🎯 Modifier la zone adverse</button>`;
+      if(!hasSmash) html+=`<button class="btn btn-outline" id="ht-smash-btn" onclick="htSmash()" style="padding:14px;font-size:14px">💥 Prendre une frappe bonus (Smash)</button>`;
+    } else {
+      html+=`<div class="lbl" style="margin-bottom:8px">Égalité — chacun peut modifier sa zone</div>`;
+      html+=`<button class="btn btn-outline" onclick="htChangeZone('me')" style="padding:14px;font-size:14px">🎯 Modifier ma zone bonus</button>`;
+    }
+    document.getElementById('ht-options').innerHTML=html;
+    go('s-ht');
+  } else {
+    finishMatch();
+  }
+}
+
+function htChangeZone(target){
+  z2Target=target;
+  document.getElementById('zone2-title').textContent=target==='me'?'Ma zone bonus':'Zone adverse';
+  document.getElementById('zone2-desc').textContent=target==='me'
+    ?'Choisis ta nouvelle zone bonus pour la 2ème mi-temps.'
+    :'Modifie la zone bonus de ton adversaire.';
+  z2Sel=target==='me'?myZone:advZone;
+  ['lateral','front','back','none'].forEach(z=>document.getElementById('z2-'+z).classList.toggle('sel',z===z2Sel));
+  document.getElementById('zone2-confirm').disabled=false;
+  go('s-zone2');
+}
+
+function htSmash(){
+  hasSmash=true;
+  const b=document.getElementById('ht-smash-btn');if(b)b.style.display='none';
+  appendHtSummary('💥 Smash bonus ajouté');
+}
+
+function appendHtSummary(txt){
+  const chip=document.createElement('div');
+  chip.className='ht-chip';chip.textContent=txt;
+  document.getElementById('ht-summary').appendChild(chip);
+}
+
+function selZ2(z){
+  z2Sel=z;
+  ['lateral','front','back','none'].forEach(zz=>document.getElementById('z2-'+zz).classList.toggle('sel',zz===z));
+  document.getElementById('zone2-confirm').disabled=false;
+}
+
+function confirmZ2(){
+  if(z2Target==='me'){myZone=z2Sel;appendHtSummary('Ta zone → '+ZL[z2Sel]);}
+  else{advZone=z2Sel;appendHtSummary('Zone adverse → '+ZL[z2Sel]);}
+  go('s-ht');
+}
+
+function startSecondHalf(){currentHalf=2;timerSec=240;resetTimer();setupMatch();go('s-match');}
+
+function finishMatch(){
+  load();
+  const{sid,mid}=CM;
+  S.sessions[sid].matches[mid].done=true;
+  save();
+  showMatchList(sid);
+}
+
+// ================================================================
+// RESULTS
+// ================================================================
+function computeStandings(sid){
+  load();
+  const p=S.sessions[sid];
+  const players=Object.keys(p.players||{});
+  const st={};
+  players.forEach(n=>{st[n]={name:n,pts:0,scored:0,conceded:0,w:0,l:0,d:0};});
+  Object.values(p.matches||{}).filter(m=>m.done).forEach(m=>{
+    const s1=m.score1||0,s2=m.score2||0;
+    if(s1>s2){if(st[m.p1]){st[m.p1].pts+=3;st[m.p1].w++;}if(st[m.p2])st[m.p2].l++;}
+    else if(s2>s1){if(st[m.p2]){st[m.p2].pts+=3;st[m.p2].w++;}if(st[m.p1])st[m.p1].l++;}
+    else{if(st[m.p1]){st[m.p1].pts++;st[m.p1].d++;}if(st[m.p2]){st[m.p2].pts++;st[m.p2].d++;}}
+    if(st[m.p1]){st[m.p1].scored+=s1;st[m.p1].conceded+=s2;}
+    if(st[m.p2]){st[m.p2].scored+=s2;st[m.p2].conceded+=s1;}
+  });
+  return Object.values(st).sort((a,b)=>b.pts-a.pts||(b.scored-b.conceded)-(a.scored-a.conceded));
+}
+
+function showResults(){
+  load();
+  const sid=S.currentSession;
+  const p=S.sessions[sid];
+  const sorted=computeStandings(sid);
+  const medals=['gold','silver','bronze'];
+  document.getElementById('results-title').textContent=p.name;
+  const total=Object.values(p.matches||{}).length;
+  const done=Object.values(p.matches||{}).filter(m=>m.done).length;
+  document.getElementById('results-badge').textContent=done+'/'+total;
+  document.getElementById('res-rank').innerHTML=sorted.map((s,i)=>`
+    <div class="result-row">
+      <div class="rank-b ${medals[i]||''}">${i+1}</div>
+      <div style="flex:1;margin-left:10px">
+        <div style="font-weight:600">${s.name}</div>
+        <div style="font-size:12px;color:var(--text2)">${s.w}V ${s.d}N ${s.l}D</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:16px;font-weight:700">${s.pts} pts</div>
+        <div style="font-size:11px;color:var(--text2)">${s.scored} – ${s.conceded}</div>
+      </div>
+    </div>`).join('');
+  const ms=Object.values(p.matches||{}).filter(m=>m.done);
+  document.getElementById('res-ms').innerHTML=ms.length
+    ? ms.map(m=>`<div class="result-row"><div style="flex:1">${m.p1}</div><div style="font-weight:700;font-size:16px;margin:0 10px">${m.score1}–${m.score2}</div><div style="flex:1;text-align:right">${m.p2}</div></div>`).join('')
+    : '<div style="font-size:13px;color:var(--text2);padding:12px 0">Aucun match terminé</div>';
+
+  // Sheets button
+  const sheetsBtn=document.getElementById('btn-export-sheets');
+  if(!S.sheetsUrl){
+    sheetsBtn.textContent='📊 Configurer l\'export Sheets d\'abord';
+    sheetsBtn.disabled=false;
+    sheetsBtn.onclick=()=>{showSheetsConfig();};
+  } else {
+    sheetsBtn.textContent='📊 Envoyer vers Google Sheets';
+    sheetsBtn.disabled=false;
+    sheetsBtn.onclick=()=>exportToSheets(sid);
+  }
+  go('s-results');
+}
+
+function showTab(t){
+  document.getElementById('res-rank').style.display=t==='rank'?'block':'none';
+  document.getElementById('res-ms').style.display=t==='ms'?'block':'none';
+  document.getElementById('tab-rank').classList.toggle('active',t==='rank');
+  document.getElementById('tab-ms').classList.toggle('active',t==='ms');
+}
+
+// ================================================================
+// EXPORT — GOOGLE SHEETS
+// ================================================================
+const APPS_SCRIPT = `function doPost(e) {
+  const data = JSON.parse(e.postData.contents);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // ── Onglet Resultats ──
+  let sheet = ss.getSheetByName('Resultats');
+  if (!sheet) sheet = ss.insertSheet('Resultats');
+  
+  // En-têtes si vide
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Date', 'Poule', 'Joueur', 'Rang', 'Pts', 'V', 'N', 'D', 'Buts+', 'Buts-', 'Diff']);
+  }
+  
+  const date = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm');
+  data.standings.forEach(function(s) {
+    sheet.appendRow([date, data.poolName, s.name, s.rank, s.pts, s.w, s.d, s.l, s.scored, s.conceded, s.scored - s.conceded]);
+  });
+  
+  // ── Onglet Matchs ──
+  let sheetM = ss.getSheetByName('Matchs');
+  if (!sheetM) sheetM = ss.insertSheet('Matchs');
+  if (sheetM.getLastRow() === 0) {
+    sheetM.appendRow(['Date', 'Poule', 'J1', 'Score J1', 'Score J2', 'J2']);
+  }
+  data.matches.forEach(function(m) {
+    sheetM.appendRow([date, data.poolName, m.p1, m.score1, m.score2, m.p2]);
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+function showSheetsConfig(){
+  document.getElementById('apps-script-code').textContent=APPS_SCRIPT;
+  const savedUrl=S.sheetsUrl||'';
+  document.getElementById('sheets-url-input').value=savedUrl;
+  document.getElementById('saved-url-display').textContent=savedUrl?'URL enregistrée : '+savedUrl:'';
+  go('s-sheets-config');
+}
+
+async function exportToSheets(sid){
+  load();
+  if(!S.sheetsUrl){alert('Configure d\'abord l\'URL Google Sheets');return;}
+  const p=S.sessions[sid];
+  const sorted=computeStandings(sid);
+  const matches=Object.values(p.matches||{}).filter(m=>m.done);
+  const payload={
+    poolName:p.name,
+    standings:sorted.map((s,i)=>({...s,rank:i+1})),
+    matches:matches.map(m=>({p1:m.p1,score1:m.score1||0,score2:m.score2||0,p2:m.p2}))
+  };
+  const statusEl=document.getElementById('sheets-export-status');
+  statusEl.innerHTML='<div class="sheets-status pending">⏳ Envoi en cours…</div>';
+  try{
+    const res=await fetch(S.sheetsUrl,{
+      method:'POST',
+      body:JSON.stringify(payload),
+      headers:{'Content-Type':'text/plain'} // Apps Script needs text/plain for CORS
+    });
+    const json=await res.json();
+    if(json.status==='ok'){
+      statusEl.innerHTML='<div class="sheets-status ok">✅ Données envoyées avec succès !</div>';
+    } else {
+      throw new Error('Réponse inattendue');
+    }
+  }catch(err){
+    statusEl.innerHTML=`<div class="sheets-status err">❌ Erreur : ${err.message}<br><small>Vérifie l'URL et que le déploiement est public.</small></div>`;
+  }
+}
+
+function exportCopy(){
+  load();
+  const sid=S.currentSession;
+  const p=S.sessions[sid];
+  const sorted=computeStandings(sid);
+  let txt=`=== ${p.name} ===\n\n--- Classement ---\n`;
+  sorted.forEach((s,i)=>{txt+=`${i+1}. ${s.name} — ${s.pts}pts (${s.w}V ${s.d}N ${s.l}D) | ${s.scored}-${s.conceded}\n`;});
+  txt+='\n--- Matchs ---\n';
+  Object.values(p.matches||{}).filter(m=>m.done).forEach(m=>{txt+=`${m.p1} ${m.score1} – ${m.score2} ${m.p2}\n`;});
+  navigator.clipboard.writeText(txt).then(()=>alert('✅ Copié dans le presse-papier !')).catch(()=>alert(txt));
+}
+
+// ================================================================
+// SHEETS CONFIG
+// ================================================================
+function saveSheetsUrl(){
+  load();
+  const url=document.getElementById('sheets-url-input').value.trim();
+  if(!url.startsWith('https://script.google.com')){
+    document.getElementById('sheets-url-status').innerHTML='<div class="sheets-status err">❌ L\'URL doit commencer par https://script.google.com</div>';
+    return;
+  }
+  S.sheetsUrl=url;
+  save();
+  document.getElementById('sheets-url-status').innerHTML='<div class="sheets-status ok">✅ URL enregistrée !</div>';
+  document.getElementById('saved-url-display').textContent='URL : '+url;
+  renderHome();
+}
+
+function copyScript(){
+  navigator.clipboard.writeText(APPS_SCRIPT)
+    .then(()=>alert('✅ Code copié ! Colle-le dans Apps Script.'))
+    .catch(()=>alert('Copie manuelle depuis la boîte ci-dessus.'));
+}
+
+// ================================================================
+// EVENT BINDINGS
+// ================================================================
+// Home
+document.getElementById('btn-new-session').onclick=()=>{
+  setupSize=3;setupPlayers=[];
+  document.getElementById('setup-pool-name').value='';
+  document.getElementById('size-val').textContent='3';
+  document.getElementById('size-info').textContent='3 joueurs → 3 matchs';
+  showStep(1);go('s-setup');
+};
+document.getElementById('btn-config-sheets').onclick=()=>{load();showSheetsConfig();};
+document.getElementById('btn-reset-all').onclick=()=>{
+  if(!confirm('⚠️ Effacer TOUTES les données ?'))return;
+  localStorage.removeItem('badevalv3');S={sessions:{},sheetsUrl:''};save();renderHome();
+};
+
+// Setup
+document.getElementById('setup-back').onclick=()=>{load();renderHome();go('s-home');};
+document.getElementById('btn-go-step2').onclick=()=>{
+  if(!document.getElementById('setup-pool-name').value.trim()){alert('Donne un nom à la poule');return;}
+  setupPlayers=[];renderSetupChips();showStep(2);
+};
+document.getElementById('btn-add-player').onclick=addSetupPlayer;
+document.getElementById('setup-player-inp').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addSetupPlayer();}});
+document.getElementById('btn-back-s1').onclick=()=>showStep(1);
+document.getElementById('btn-go-step3').onclick=goStep3;
+document.getElementById('btn-back-s2').onclick=()=>showStep(2);
+document.getElementById('btn-start-session').onclick=startSession;
+
+// Match list
+document.getElementById('matchlist-back').onclick=()=>{load();renderHome();go('s-home');};
+document.getElementById('btn-go-results').onclick=()=>{load();showResults();};
+
+// Who
+document.getElementById('who-back').onclick=()=>{if(CM)showMatchList(CM.sid);};
+
+// Zone
+document.getElementById('zone-confirm-btn').onclick=()=>{
+  load();if(CM)S.sessions[CM.sid].matches[CM.mid].myZone1=myZone;save();setupMatch();go('s-match');
+};
+
+// Match
+document.getElementById('timer-btn').onclick=toggleTimer;
+document.getElementById('timer-reset-btn').onclick=resetTimer;
+document.getElementById('end-half-btn').onclick=endHalf;
+
+// Halftime
+document.getElementById('btn-start-2nd').onclick=startSecondHalf;
+document.getElementById('zone2-back').onclick=()=>go('s-ht');
+document.getElementById('zone2-confirm').onclick=confirmZ2;
+
+// Results
+document.getElementById('results-back').onclick=()=>{load();if(S.currentSession)showMatchList(S.currentSession);};
+document.getElementById('btn-export-copy').onclick=exportCopy;
+document.getElementById('btn-new-from-results').onclick=()=>{
+  setupSize=3;setupPlayers=[];
+  document.getElementById('setup-pool-name').value='';
+  document.getElementById('size-val').textContent='3';
+  showStep(1);go('s-setup');
+};
+
+// Sheets config
+document.getElementById('sheets-config-back').onclick=()=>{load();renderHome();go('s-home');};
+document.getElementById('btn-copy-script').onclick=copyScript;
+document.getElementById('btn-save-sheets-url').onclick=saveSheetsUrl;
+
+// ================================================================
+// INIT
+// ================================================================
+load();
+renderHome();
+</script>
+</body>
+</html>
